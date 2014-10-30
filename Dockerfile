@@ -6,7 +6,7 @@ RUN apt-get update && apt-get -y install wget && \
     wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|apt-key add - && \
     echo 'deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.5 main' > /etc/apt/sources.list.d/llvm.list && \
     apt-key adv --recv-keys --keyserver keyserver.ubuntu.com C504E590 && \
-    echo 'deb http://ppa.launchpad.net/delcypher/smt/ubuntu trusty main' > /etc/apt/sources.list.d/smt.list && \
+    echo 'deb http://ppa.launchpad.net/delcypher/gpuverify-smt/ubuntu trusty main' > /etc/apt/sources.list.d/smt.list && \
     wget -O - http://download.mono-project.com/repo/xamarin.gpg |apt-key add - && \
     echo "deb http://download.mono-project.com/repo/debian wheezy main" > /etc/apt/sources.list.d/mono-xamarin.list && \
     apt-get update
@@ -27,7 +27,7 @@ RUN apt-get -y --no-install-recommends install python python-dev python-pip && \
 
 
 # Setup Z3
-RUN apt-get -y install z3
+RUN apt-get -y install z3=4.3.1-0~trusty1
 
 # Install Other tools needed for build
 RUN apt-get -y --no-install-recommends install cmake zlib1g-dev zlib1g mercurial git make libedit-dev vim
@@ -40,6 +40,7 @@ WORKDIR /home/gv
 # Build Bugle
 RUN mkdir bugle && cd bugle && mkdir build && \
     git clone git://github.com/mc-imperial/bugle.git src && \
+    cd src/ && git checkout feabc95ce0ada660c5a4728c85b47e6dc936254b && cd ../ && \
     cd build && \
     cmake -DLLVM_CONFIG_EXECUTABLE=/usr/bin/llvm-config-3.5 ../src && \
     make
@@ -51,6 +52,7 @@ RUN mkdir libclc && \
     mkdir install && \
     git clone http://llvm.org/git/libclc.git srcbuild && \
     cd srcbuild && \
+    git checkout ac887c4806de4b2d44048c8f30cf2712c79cc32d && \
     ./configure.py --with-llvm-config=/usr/bin/llvm-config-3.5 --prefix=/home/gv/libclc/install nvptx-- nvptx64-- && \
     make && \
     make install
@@ -71,6 +73,7 @@ USER gv
 # Build GPUVerify C# components
 RUN hg clone https://hg.codeplex.com/gpuverify && \
     cd gpuverify && \
+    hg update c308dba98b9c277b160f186dd3e8facd9c87f3cf && \
     xbuild GPUVerify.sln && \
     ln -s /usr/bin/z3 Binaries/z3.exe
 
