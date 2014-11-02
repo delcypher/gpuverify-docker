@@ -12,6 +12,13 @@ $ cd /path/to/this/repository
 $ docker build -t "gpuverify" .
 ```
 
+Alternatively you can obtain a pre-built docker image from the [Docker Hub](https://registry.hub.docker.com/u/delcypher/gpuverify-docker/)
+by running
+
+```
+$ docker pull delcypher/gpuverify-docker
+```
+
 Running
 -------
 
