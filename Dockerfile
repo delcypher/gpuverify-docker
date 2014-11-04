@@ -82,3 +82,9 @@ ADD gvfindtools.py /home/gv/gpuverify/
 
 # Put GPUVerify in PATH
 RUN echo 'PATH=/home/gv/gpuverify:$PATH' >> ~/.bashrc
+
+# Setup GPUVerifyRise4Fun
+USER root
+RUN pip install flask tornado
+USER gv
+ADD gpuverify-rise4fun-config.py /home/gv/gpuverify/utils/GPUVerifyRise4Fun/config.py
