@@ -47,15 +47,11 @@ llvmLibDir = '/usr/lib/llvm-3.5/lib/'
 # GPUVerifyVCGen.exe, GPUVerifyCruncher.exe and GPUVerifyBoogieDriver.exe should be there
 gpuVerifyBinDir = rootDir + "/gpuverify/Binaries"
 
-# The path to the z3 Source directory.
-z3SrcDir = rootDir + "/z3"
-
 # The path to the directory containing z3.exe
-z3BinDir = gpuVerifyBinDir
-
+cvc4BinDir = gpuVerifyBinDir
 
 # Default solver should be one of ['z3','cvc4']
-defaultSolver = 'z3'
+defaultSolver = 'cvc4'
 
 # If true mono will prepended to every command involving CIL executables
 useMono = True

@@ -26,8 +26,8 @@ RUN apt-get -y --no-install-recommends install python python-dev python-pip && \
     pip install psutil
 
 
-# Setup Z3
-RUN apt-get -y install z3=4.3.1-0~trusty1
+# Setup CVC4
+RUN apt-get -y install --no-install-recommends cvc4
 
 # Install Other tools needed for build
 RUN apt-get -y --no-install-recommends install cmake zlib1g-dev zlib1g mercurial git make libedit-dev vim
@@ -75,7 +75,7 @@ RUN hg clone https://hg.codeplex.com/gpuverify && \
     cd gpuverify && \
     hg update c308dba98b9c277b160f186dd3e8facd9c87f3cf && \
     xbuild GPUVerify.sln && \
-    ln -s /usr/bin/z3 Binaries/z3.exe
+    ln -s /usr/bin/cvc4 Binaries/cvc4.exe
 
 # Copy gvfindtools.py from context
 ADD gvfindtools.py /home/gv/gpuverify/
