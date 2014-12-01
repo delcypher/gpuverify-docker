@@ -9,7 +9,7 @@ Building
 
 ```
 $ cd /path/to/this/repository
-$ docker build -t "gpuverify" .
+$ docker build -t "delcypher/gpuverify-docker" .
 ```
 
 Alternatively you can obtain a pre-built docker image from the [Docker Hub](https://registry.hub.docker.com/u/delcypher/gpuverify-docker/)
@@ -25,7 +25,7 @@ Running
 This will give you a shell into the container.
 
 ```
-$ docker run -ti --rm gpuverify /bin/bash
+$ docker run -ti --rm delcypher/gpuverify-docker /bin/bash
 ```
 
 To actually verify some kernels you'll probably want to add
