@@ -1,6 +1,10 @@
 FROM ubuntu:14.04
 MAINTAINER Dan Liew <daniel.liew@imperial.ac.uk>
 
+ENV BUGLE_REV 68ff5677de8537c2130af3eb6b24d56923491636
+ENV LIBCLC_REV 229064524b0384ac3e7397ebe29424b8d6ddb11c
+ENV GPUVERIFY_REV 7c6d850566de2c42065250b2137708837d5e3b5c
+
 # Get keys, add repos and update apt-cache
 RUN apt-get update && apt-get -y install wget && \
     wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|apt-key add - && \
@@ -27,7 +31,7 @@ RUN apt-get -y --no-install-recommends install python python-dev python-pip && \
 
 
 # Setup Z3
-RUN apt-get -y install z3=4.3.1-0~trusty1
+RUN apt-get -y install z3=4.3.2-0~trusty1
 
 # Install Other tools needed for build
 RUN apt-get -y --no-install-recommends install cmake zlib1g-dev zlib1g mercurial git make libedit-dev vim
@@ -40,7 +44,7 @@ WORKDIR /home/gv
 # Build Bugle
 RUN mkdir bugle && cd bugle && mkdir build && \
     git clone git://github.com/mc-imperial/bugle.git src && \
-    cd src/ && git checkout feabc95ce0ada660c5a4728c85b47e6dc936254b && cd ../ && \
+    cd src/ && git checkout ${BUGLE_REV} && cd ../ && \
     cd build && \
     cmake -DLLVM_CONFIG_EXECUTABLE=/usr/bin/llvm-config-3.5 ../src && \
     make
@@ -52,7 +56,7 @@ RUN mkdir libclc && \
     mkdir install && \
     git clone http://llvm.org/git/libclc.git srcbuild && \
     cd srcbuild && \
-    git checkout ac887c4806de4b2d44048c8f30cf2712c79cc32d && \
+    git checkout ${LIBCLC_REV} && \
     ./configure.py --with-llvm-config=/usr/bin/llvm-config-3.5 --prefix=/home/gv/libclc/install nvptx-- nvptx64-- && \
     make && \
     make install
@@ -73,7 +77,7 @@ USER gv
 # Build GPUVerify C# components
 RUN hg clone https://hg.codeplex.com/gpuverify && \
     cd gpuverify && \
-    hg update c308dba98b9c277b160f186dd3e8facd9c87f3cf && \
+    hg update ${GPUVERIFY_REV} && \
     xbuild GPUVerify.sln && \
     ln -s /usr/bin/z3 Binaries/z3.exe
 
