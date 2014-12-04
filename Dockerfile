@@ -24,6 +24,13 @@ RUN apt-get -y install llvm-3.5 llvm-3.5-dev llvm-3.5-tools clang-3.5 libclang-3
     update-alternatives --install /usr/bin/opt opt /usr/bin/opt-3.5 50 && \
     update-alternatives --install /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-3.5 50
 
+# Setup Mono
+RUN apt-get -y install mono-xbuild \
+                       libmono-microsoft-build-tasks-v4.0-4.0-cil \
+                       mono-dmcs libmono-system-numerics4.0-cil \
+                       libmono-system-windows4.0-cil \
+                       libmono-corlib4.0-cil
+
 # Setup Python
 RUN apt-get -y --no-install-recommends install python python-dev python-pip && \
     ln -s /usr/bin/clang /usr/bin/x86_64-linux-gnu-gcc && \
@@ -60,19 +67,6 @@ RUN mkdir libclc && \
     ./configure.py --with-llvm-config=/usr/bin/llvm-config-3.5 --prefix=/home/gv/libclc/install nvptx-- nvptx64-- && \
     make && \
     make install
-
-
-USER root
-# Setup Mono. We delay installing until now because we aren't installing
-# all of mono so if the build breaks we want to able to change what mono
-# components are installed without invalidating Docker's cache of the previous
-# steps.
-RUN apt-get -y install mono-xbuild \
-                       libmono-microsoft-build-tasks-v4.0-4.0-cil \
-                       mono-dmcs libmono-system-numerics4.0-cil \
-                       libmono-system-windows4.0-cil \
-                       libmono-corlib4.0-cil
-USER gv
 
 # Build GPUVerify C# components
 RUN hg clone https://hg.codeplex.com/gpuverify && \
