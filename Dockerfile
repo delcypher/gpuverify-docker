@@ -1,6 +1,10 @@
 FROM ubuntu:14.04
 MAINTAINER Dan Liew <daniel.liew@imperial.ac.uk>
 
+ENV BUGLE_REV 68ff5677de8537c2130af3eb6b24d56923491636
+ENV LIBCLC_REV 229064524b0384ac3e7397ebe29424b8d6ddb11c
+ENV GPUVERIFY_REV 4e17865ffa6dcd5d2809fb39790d291168d19228
+
 # Get keys, add repos and update apt-cache
 RUN apt-get update && apt-get -y install wget && \
     wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|apt-key add - && \
@@ -20,6 +24,13 @@ RUN apt-get -y install llvm-3.5 llvm-3.5-dev llvm-3.5-tools clang-3.5 libclang-3
     update-alternatives --install /usr/bin/opt opt /usr/bin/opt-3.5 50 && \
     update-alternatives --install /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-3.5 50
 
+# Setup Mono
+RUN apt-get -y install mono-xbuild \
+                       libmono-microsoft-build-tasks-v4.0-4.0-cil \
+                       mono-dmcs libmono-system-numerics4.0-cil \
+                       libmono-system-windows4.0-cil \
+                       libmono-corlib4.0-cil
+
 # Setup Python
 RUN apt-get -y --no-install-recommends install python python-dev python-pip && \
     ln -s /usr/bin/clang /usr/bin/x86_64-linux-gnu-gcc && \
@@ -27,7 +38,7 @@ RUN apt-get -y --no-install-recommends install python python-dev python-pip && \
 
 
 # Setup CVC4
-RUN apt-get -y install --no-install-recommends cvc4
+RUN apt-get -y install --no-install-recommends cvc4=1.4+1branch-ppa1~trusty
 
 # Install Other tools needed for build
 RUN apt-get -y --no-install-recommends install cmake zlib1g-dev zlib1g mercurial git make libedit-dev vim
@@ -40,7 +51,7 @@ WORKDIR /home/gv
 # Build Bugle
 RUN mkdir bugle && cd bugle && mkdir build && \
     git clone git://github.com/mc-imperial/bugle.git src && \
-    cd src/ && git checkout feabc95ce0ada660c5a4728c85b47e6dc936254b && cd ../ && \
+    cd src/ && git checkout ${BUGLE_REV} && cd ../ && \
     cd build && \
     cmake -DLLVM_CONFIG_EXECUTABLE=/usr/bin/llvm-config-3.5 ../src && \
     make
@@ -52,28 +63,15 @@ RUN mkdir libclc && \
     mkdir install && \
     git clone http://llvm.org/git/libclc.git srcbuild && \
     cd srcbuild && \
-    git checkout ac887c4806de4b2d44048c8f30cf2712c79cc32d && \
+    git checkout ${LIBCLC_REV} && \
     ./configure.py --with-llvm-config=/usr/bin/llvm-config-3.5 --prefix=/home/gv/libclc/install nvptx-- nvptx64-- && \
     make && \
     make install
 
-
-USER root
-# Setup Mono. We delay installing until now because we aren't installing
-# all of mono so if the build breaks we want to able to change what mono
-# components are installed without invalidating Docker's cache of the previous
-# steps.
-RUN apt-get -y install mono-xbuild \
-                       libmono-microsoft-build-tasks-v4.0-4.0-cil \
-                       mono-dmcs libmono-system-numerics4.0-cil \
-                       libmono-system-windows4.0-cil \
-                       libmono-corlib4.0-cil
-USER gv
-
 # Build GPUVerify C# components
 RUN hg clone https://hg.codeplex.com/gpuverify && \
     cd gpuverify && \
-    hg update c308dba98b9c277b160f186dd3e8facd9c87f3cf && \
+    hg update ${GPUVERIFY_REV} && \
     xbuild GPUVerify.sln && \
     ln -s /usr/bin/cvc4 Binaries/cvc4.exe
 
