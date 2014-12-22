@@ -1,9 +1,9 @@
 FROM ubuntu:14.04
 MAINTAINER Dan Liew <daniel.liew@imperial.ac.uk>
 
-ENV BUGLE_REV 68ff5677de8537c2130af3eb6b24d56923491636
-ENV LIBCLC_REV 229064524b0384ac3e7397ebe29424b8d6ddb11c
-ENV GPUVERIFY_REV 4e17865ffa6dcd5d2809fb39790d291168d19228
+ENV BUGLE_REV 9cd0dfc8d74be255f5bc6bba78a3078d11a708a9
+ENV LIBCLC_REV acd73c5e9b1a8e0054ef2a3c01faf80b21014050
+ENV GPUVERIFY_REV 6e4d2a9de29856bc28c7e151bf85003bd0c5fdf4
 
 # Get keys, add repos and update apt-cache
 RUN apt-get update && apt-get -y install wget && \
