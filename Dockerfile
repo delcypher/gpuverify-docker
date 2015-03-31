@@ -1,9 +1,10 @@
 FROM ubuntu:14.04
 MAINTAINER Dan Liew <daniel.liew@imperial.ac.uk>
 
-ENV BUGLE_REV 9cd0dfc8d74be255f5bc6bba78a3078d11a708a9
-ENV LIBCLC_REV acd73c5e9b1a8e0054ef2a3c01faf80b21014050
-ENV GPUVERIFY_REV 6e4d2a9de29856bc28c7e151bf85003bd0c5fdf4
+ENV BUGLE_REV 51065a6b636564e44777fda74680863ccc31ba0c
+ENV LIBCLC_REV 233697
+ENV LIBCLC_SVN_URL http://llvm.org/svn/llvm-project/libclc/branches/release_35
+ENV GPUVERIFY_REV  951af74bcf19a9791098724f2e2393d3e2e58335
 
 # Get keys, add repos and update apt-cache
 RUN apt-get update && apt-get -y install wget && \
@@ -41,7 +42,7 @@ RUN apt-get -y --no-install-recommends install python python-dev python-pip && \
 RUN apt-get -y install z3=4.3.2-0~trusty1
 
 # Install Other tools needed for build
-RUN apt-get -y --no-install-recommends install cmake zlib1g-dev zlib1g mercurial git make libedit-dev vim
+RUN apt-get -y --no-install-recommends install cmake zlib1g-dev zlib1g mercurial git subversion make libedit-dev vim
 
 # Add a non-root user
 RUN useradd -m gv
@@ -61,9 +62,8 @@ RUN mkdir bugle && cd bugle && mkdir build && \
 RUN mkdir libclc && \
     cd libclc && \
     mkdir install && \
-    git clone http://llvm.org/git/libclc.git srcbuild && \
+    svn co -r ${LIBCLC_REV} ${LIBCLC_SVN_URL} srcbuild && \
     cd srcbuild && \
-    git checkout ${LIBCLC_REV} && \
     ./configure.py --with-llvm-config=/usr/bin/llvm-config-3.5 --prefix=/home/gv/libclc/install nvptx-- nvptx64-- && \
     make && \
     make install
@@ -84,5 +84,6 @@ RUN echo 'PATH=/home/gv/gpuverify:$PATH' >> ~/.bashrc
 # Setup GPUVerifyRise4Fun
 USER root
 RUN pip install flask tornado
-USER gv
 ADD gpuverify-rise4fun-config.py /home/gv/gpuverify/utils/GPUVerifyRise4Fun/config.py
+RUN chmown gv: /home/gv/gpuverify/utils/GPUVerifyRise4Fun/config.py
+USER gv
