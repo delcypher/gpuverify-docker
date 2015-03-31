@@ -79,7 +79,7 @@ RUN hg clone https://hg.codeplex.com/gpuverify && \
 ADD gvfindtools.py /home/gv/gpuverify/
 
 # Put GPUVerify in PATH
-RUN echo 'PATH=/home/gv/gpuverify:$PATH' >> ~/.bashrc
+RUN echo 'PATH=/home/gv/gpuverify:$PATH' >> /home/gv/.bashrc
 
 # Setup GPUVerifyRise4Fun
 USER root
