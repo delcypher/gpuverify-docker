@@ -95,3 +95,4 @@ USER gv
 # Entry point for GPUVerifyRise4Fun
 EXPOSE 5000
 ENTRYPOINT ["/usr/bin/python", "/home/gv/gpuverify/utils/GPUVerifyRise4Fun/production_server.py"]
+CMD []
