@@ -85,5 +85,13 @@ RUN echo 'PATH=/home/gv/gpuverify:$PATH' >> ~/.bashrc
 USER root
 RUN pip install flask tornado
 ADD gpuverify-rise4fun-config.py /home/gv/gpuverify/utils/GPUVerifyRise4Fun/config.py
-RUN chmown gv: /home/gv/gpuverify/utils/GPUVerifyRise4Fun/config.py
+RUN chown gv: /home/gv/gpuverify/utils/GPUVerifyRise4Fun/config.py
+# For logged data
+RUN mkdir /data/
+RUN chown gv: /data
+VOLUME /data
 USER gv
+
+# Entry point for GPUVerifyRise4Fun
+EXPOSE 5000
+ENTRYPOINT ["/usr/bin/python", "/home/gv/gpuverify/utils/GPUVerifyRise4Fun/production_server.py"]
