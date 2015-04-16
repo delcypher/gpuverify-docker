@@ -85,9 +85,9 @@ RUN echo 'PATH=/home/gv/gpuverify:$PATH' >> /home/gv/.bashrc
 ADD gpuverify-rise4fun-config.py /home/gv/gpuverify/utils/GPUVerifyRise4Fun/config.py
 USER root
 RUN chown gv: /home/gv/gpuverify/utils/GPUVerifyRise4Fun/config.py
-# For logged data
-RUN mkdir /data/
-RUN chown gv: /data
+# For logged data (these get copied into the volume when container is created)
+RUN mkdir /data/ && mkdir /data/logged_kernels && mkdir /data/counters
+RUN chown -R gv: /data
 VOLUME /data
 USER gv
 
