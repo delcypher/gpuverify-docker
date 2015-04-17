@@ -18,7 +18,7 @@ INCLUDE_VERSION_FROM_LOCAL=True
 # Note you should not pass --timeout= ( see GPUVERIFY_TIMEOUT )
 # Note you should not pass --blockDim= , --gridDim=, --local_size or --num_groups=
 # These arguments are filtered and may be blocked (see extractOtherCmdArgs() )
-GPUVERIFY_DEFAULT_ARGS= ['--verbose']
+GPUVERIFY_DEFAULT_ARGS= []
 
 # The directory to log recieved kernels. Set to None to disable
 LOGGED_KERNELS_DIR = '/data/logged_kernels'
