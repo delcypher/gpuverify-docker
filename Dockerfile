@@ -4,7 +4,7 @@ MAINTAINER Dan Liew <daniel.liew@imperial.ac.uk>
 ENV BUGLE_REV=3b5185cd4ae4f3e7fc7a3b7a83d424689d7400a3 \
     LIBCLC_REV=233697 \
     LIBCLC_SVN_URL=http://llvm.org/svn/llvm-project/libclc/branches/release_35 \
-    GPUVERIFY_REV=74c6d45ee4d9c379b6559614e80a1a37bab3e103
+    GPUVERIFY_REV=5d9b6355a13509222aa5eada22c051495d5be79f
 
 # Get keys, add repos and update apt-cache
 RUN apt-get update && apt-get -y install wget && \
